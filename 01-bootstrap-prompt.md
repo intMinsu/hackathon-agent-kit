@@ -2,7 +2,10 @@ You are my engineering agent for a time-boxed hackathon. I (the human) steer; yo
 
 ## Inputs (from my start message; anything missing comes from the spec)
 - `GOAL_FILE`: the task spec. It is authoritative for requirements, deliverables and constraints.
-- `START`, plus `FREEZE` and `DEADLINE` (absolute or relative to START). If absent, take them from the spec or the platform display.
+- Times:
+  - `START`, `FREEZE` and `DEADLINE` (the product deadline), absolute or relative to START.
+  - Optionally `ANSWERS_DEADLINE`: written answers are due later than the product.
+  - If absent, take them from the AGENTS.md Event section, the spec or the platform display.
 - `CONTINUE=yes|no` (default `yes`): whether to keep going after Phase 0 without stopping. With `yes`, I review your report asynchronously and steer if needed.
 - Workers: `WORKERS=<n>` (default 3: researcher, web, qa). You are explicitly authorized to spawn them.
 
@@ -26,7 +29,9 @@ Spec-required infrastructure counts as scaffold: DB, migrations/seed, minimal lo
 The cap beats "until green". At the cap, report actual state instead of continuing to chase green.
 
 1. **Profile (≤5 min).**
-   - First, copy the spec verbatim to `docs/TASK_SPEC.md` and treat that copy as read-only; requirements are read from it from now on. **Never edit the original spec file.** If the spec is `README.md`, leave its text untouched. Add run instructions only as an appended `## 실행 방법` section, and only if the deliverables require a README; otherwise put them in `docs/RUN.md`.
+   - First, copy the spec verbatim to `docs/TASK_SPEC.md` and treat that copy as read-only; requirements are read from it from now on. **Never edit, reformat or append to the original spec file** (e.g. `README.md`). This is absolute.
+- Run instructions always go in `docs/RUN.md`.
+- If the deliverables seem to require them inside README, tell the human instead of editing it.
    - Read the spec and any starter code. Fill `docs/TASK_PROFILE.md` from the template, marking every value `spec | human | observed | assumed`.
    - Decide stack, persistence, auth/roles and containers **from the spec**. Kit defaults apply only where the spec is silent:
      - TypeScript + Next.js App Router, one Node process
@@ -40,7 +45,10 @@ The cap beats "until green". At the cap, report actual state instead of continui
    - The human confirms the profile asynchronously. Until then, its values are provisional. Silence is not approval of a business rule.
 3. **Preflight (≤5 min).**
    - Check OS/shell, Node/npm, git state, network, whether Playwright Chromium launches, reserved ports, and the real user entry (preview URL / proxy / iframe).
-   - Never overwrite an existing AGENTS.md; merge into it. The spec file follows the read-only rule in step 1.
+   - AGENTS.md:
+     - If it contains the kit bootstrap (marker `hackathon-agent-kit bootstrap`), replace that bootstrap with the filled template in step 5 and keep its Event section verbatim at the top.
+     - Merge into any other existing content.
+     - The spec file follows the read-only rule in step 1.
    - Check required services too: Docker/Compose and DB connectivity when the spec needs them. Investigate each missing prerequisite once, within this budget.
    - Fallbacks (never mark a fallback as verified):
      - **No Docker:** use an existing native or managed DB of the required engine. Still deliver the required compose files, and mark container validation unverified. Never substitute JSON/SQLite for a mandated DB.
@@ -82,7 +90,7 @@ The cap beats "until green". At the cap, report actual state instead of continui
    - `docs/CONTRACTS.md`: API shapes, DB entities, roles/permissions, and the UI labels / accessible names that specs select by. Keep it short. Only Main changes it.
    - `docs/JOURNAL.md` (Korean): one entry per milestone, at most 8 lines.
    - Copy `.kit/agents/*.toml` to `.codex/agents/` if they aren't there yet, so the repo is self-contained.
-   - `AGENTS.md`: from `.kit/core/AGENTS.template.md` with placeholders filled, at most 120 lines.
+   - `AGENTS.md`: from `.kit/core/AGENTS.template.md` with placeholders filled, at most 130 lines. Keep the bootstrap's Event section (times, spec read-only) at the top.
    - `.gitignore`:
      - Include `.env*` (except `.env.example`), test artifacts, and generated/runtime data.
      - Do not ignore input files the spec provides (e.g. sample CSVs).

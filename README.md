@@ -14,24 +14,29 @@
 
 ## 빠른 시작
 
+과제 폴더(README.md가 있는 곳)에서:
+
 ```bash
-git clone --depth 1 https://github.com/intMinsu/hackathon-agent-kit .kit
-mkdir -p .codex/agents && cp .kit/agents/*.toml .codex/agents/
-codex -m gpt-6.1-sol -c model_reasoning_effort='"xhigh"' --search -s workspace-write -c sandbox_workspace_write.network_access=true -a on-request
+git clone --depth 1 https://github.com/intMinsu/hackathon-agent-kit .kit && bash .kit/start.sh
 ```
 
-첫 메시지(`/goal` 한 줄):
+Codex가 열리면 아래 두 줄을 입력해요. `/goal`을 쓸 수 없으면 두 번째 줄 대신 `start`를 보내요.
 
 ```
-/goal Run .kit/01-bootstrap-prompt.md with GOAL_FILE=<과제.md> START=13:00 FREEZE=+2h30 DEADLINE=+3h, then build per AGENTS.md until the freeze checklist is done. After any compaction, re-read AGENTS.md and the PLANS.md Resume first. QA alone runs full verify. At FREEZE set phase frozen; on end, set phase ended and stop.
+/fast
+/goal Follow AGENTS.md
 ```
 
-`/goal`을 쓸 수 없는 경우의 대안은 `02-goal-command.txt`에 있어요. 진행 순서는 `RUNBOOK.md`를 따라요.
+- 기본 일정(KST)은 19:00 시작, 21:30 동결, 22:00 제품 마감, 23:00 답안 마감이에요. 다르면 `bash .kit/start.sh <시작> <제품마감> <답안마감>`으로 실행해요.
+- 과제 원문 README.md는 수정하지 않아요.
+- 자세한 진행은 `RUNBOOK.md`를 따라요.
 
 ## 파일
 
 | 파일 | 내용 |
 |---|---|
+| `start.sh` / `start.ps1` | 한 번에 세팅하고 실행해요: 역할 설치, 루트 AGENTS.md 생성(원문은 건드리지 않음), `.kit` 제외, codex를 고정 옵션으로 실행 |
+| `bootstrap/AGENTS.md` | 세션이 시작될 때 자동으로 읽히는 첫 지시(시각, 원문 읽기 전용, 0단계 자동 시작) |
 | `01-bootstrap-prompt.md` | 0단계 지시: 과제 설정, researcher 조기 투입, 사전 점검, 하네스, 계약, 계획 |
 | `core/AGENTS.template.md` | 운영 계약: 팀과 소유권, 검증 규칙, 실제 접속 경로, 종료 처리 |
 | `agents/researcher.toml` | 해법 탐색 → `SOLUTION_BRIEF.md` → 솔버 구현. 문제 유형별 baseline·표준 해법·라이선스 표 포함 |

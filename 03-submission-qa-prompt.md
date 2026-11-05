@@ -1,4 +1,8 @@
-Prepare the submission docs in the **exact format and questions the spec asks for** (see TASK_PROFILE deliverables). If the spec gives none, write docs/SUBMISSION_QA.md in Korean with the default questions below.
+Prepare the written answers in the **exact format and questions the organizers give**: in the spec, in a file, or pasted by the human (e.g. 6 서술형 questions).
+- Set `phase: answering` if the product deadline has passed. From then on, make no product changes.
+- Write the answers to docs/SUBMISSION_QA.md: one section per question, in the given order and language, within any length limits.
+- If no questions are given, answer the default Q1/Q2 below.
+- The answers deadline is in the AGENTS.md Event section.
 
 Evidence rules:
 - Base claims on repository history (`git log --stat` from the start commit in JOURNAL) and on the latest completed evidence that matches the relevant product code, input and runtime.

@@ -8,7 +8,7 @@
 
 ## On every (re)entry: compaction, resume, new session
 1. Read this file and the PLANS.md Resume section, then check the clock and `git status`.
-2. If `phase: ended`, do not build or start new tests. Only answer questions or do explicitly requested wrap-up.
+2. If `phase: ended`, do not build or start new tests. Only answer questions or do explicitly requested wrap-up. If `phase: answering`, only the written answers; no product changes.
 3. If `phase: frozen`, only fixes, verification and submission docs.
 4. Otherwise continue from "next action".
 
@@ -103,7 +103,12 @@
 - A blocker gets at most 10 minutes, then use a fallback or cut scope (and log it).
 - Check the clock before each milestone and before/after long commands. Store absolute times with timezone. A command's timeout must fit the remaining time.
 - At FREEZE, or when the human says freeze: set `phase: frozen` first, then run the freeze checklist.
-- At DEADLINE, or when the human or platform announces the end (this overrides the plan):
+- If written answers are due after the product (ANSWERS_DEADLINE), then at DEADLINE set `phase: answering`:
+  - Make no product code, config or data changes.
+  - Start no new builds or tests.
+  - Write only the organizers' questions, in their format, from existing evidence (`.kit/03-submission-qa-prompt.md`).
+  - At ANSWERS_DEADLINE, apply the end steps below.
+- At the final deadline, or when the human or platform announces the end (this overrides the plan):
   1. Set `phase: ended` with the time and source.
   2. Notify workers, stop owned work safely, preserve data and artifacts, and don't kill shared services.
   3. Start no new builds or tests. Requested wrap-up uses existing evidence.
@@ -118,6 +123,6 @@
 1. Run `npm run verify` (including the independent checks) once. Record the results, scope and evidence state.
 2. Production or required runtime (build/start, DB restart, container): check what the spec requires, through the real entry path.
 3. Reuse matching repeat evidence. Repeat only the critical flows whose code, input or runtime changed since.
-4. Run docs (`docs/RUN.md`, or an appended section of README if the deliverables require it; never edit the spec text): run, test, env vars, limitations.
+4. `docs/RUN.md`: run, test, env vars, limitations. Never edit the spec file (e.g. README.md). If README content seems required, tell the human.
 5. Final JOURNAL entry: outcomes, including cut scope.
 6. Submission docs in the exact format the spec asks for (default: Korean Q1/Q2 in docs/SUBMISSION_QA.md).
