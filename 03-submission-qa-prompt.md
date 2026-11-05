@@ -1,35 +1,34 @@
-Write (or finish) docs/SUBMISSION_QA.md in Korean, answering the two judge questions.
+Prepare the submission docs in the **exact format and questions the spec asks for** (see TASK_PROFILE deliverables). If the spec gives none, write docs/SUBMISSION_QA.md in Korean with the default questions below.
 
 Evidence rules:
-- Base every claim on `git log --stat` (from the starting commit in JOURNAL.md), docs/PLANS.md, docs/JOURNAL.md, e2e/, and a fresh `npm run verify` that you run now (quote the exact counts).
-- No claim without evidence. If something was not verified, live LLM integration included, say so plainly.
+- Base every claim on `git log --stat` (from the start commit in JOURNAL), docs/PLANS.md, docs/JOURNAL.md, e2e/, the independent checks, and fresh runs of `npm run verify` and the independent checks that you start now. Quote the exact counts and the evidence state (commit + dirty/clean, input version).
+- Don't add up counts from different runs. If something wasn't verified (live API, production path, real entry path), say so plainly.
 
-Q1. 핵심 모듈 구현 및 검증 방법
-- Table: 모듈 | 책임 | 핵심 구현 파일 | 핵심 설계 결정(이유) | 검증한 E2E spec과 단언 내용 | 최근 결과 | 한계
-- One short paragraph on the verification harness:
-  - Playwright E2E as the definition of done
-  - dedicated E2E server with E2E=1
-  - transport-level fakes for external APIs
-  - fixed date
-  - seed/reset
+Default Q1. 핵심 모듈 구현 및 검증 방법
+- Table: 모듈 | 책임 | 핵심 파일 | 설계 결정(이유) | 검증(E2E spec / 독립 검증 / 단언 내용) | 최근 결과 | 한계
+- One paragraph on the verification harness:
+  - E2E as the definition of done for user flows
+  - an independent checker for computed results
+  - verification through the real entry path
+  - a dedicated E2E server with transport-level fakes
+  - a fixed date
   - flake checks
-  - production build check
 
-Q2. Agent를 어떻게 썼고 어떤 부분을 바꿨는지
+Default Q2. Agent를 어떻게 썼고 어떤 부분을 바꿨는지
 - Setup:
-  - the starting prompt and AGENTS.md (operating contract)
-  - Playwright harness
-  - skills actually used
-  - /goal
-  - subagents actually spawned (what each did)
-  - model and reasoning-effort settings per phase
-- Changes table: 처음 접근 | 무엇을 바꿨나 | 계기(테스트 실패 / 사람 개입 / 시간 제약) | 커밋 hash
-  - 3-5 concrete rows from JOURNAL.md and git log.
+  - the pre-made kit (public repo, no product code)
+  - AGENTS.md contract and TASK_PROFILE
+  - the e2e-loop skill
+  - /goal (if used)
+  - workers actually spawned and their handoffs
+  - model/effort per phase
+- Changes table: 처음 접근 | 바꾼 것 | 계기(테스트 실패 / 독립 검증 / 사람 개입 / 시간) | 커밋. Give 3-5 real rows.
 - What we changed from default agent workflows, and why:
-  - skipped brainstorming, worktrees and per-task review for time
-  - test-integrity rule against test weakening
-  - E2E-first definition of done
-  - Resume section for context compaction
-- Human interventions: what I steered and why. If there were none in a phase, say "no human intervention".
+  - E2E-first done
+  - anti-test-weakening
+  - independent checks
+  - change-based re-verification
+  - Resume/phase state
+- Human interventions. If there were none in a phase, say so.
 
-Keep each answer to about one page and skimmable. Commit the file, then print both answers in the chat.
+Keep each answer to about one page and skimmable. Commit the docs, then print them in the chat.
