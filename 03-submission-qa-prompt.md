@@ -1,7 +1,9 @@
 Prepare the submission docs in the **exact format and questions the spec asks for** (see TASK_PROFILE deliverables). If the spec gives none, write docs/SUBMISSION_QA.md in Korean with the default questions below.
 
 Evidence rules:
-- Base every claim on `git log --stat` (from the start commit in JOURNAL), docs/PLANS.md, docs/JOURNAL.md, e2e/, the independent checks, and fresh runs of `npm run verify` and the independent checks that you start now. Quote the exact counts and the evidence state (commit + dirty/clean, input version).
+- Base claims on repository history (`git log --stat` from the start commit in JOURNAL) and on the latest completed evidence that matches the relevant product code, input and runtime.
+- Quote each run's scope, counts and evidence state. Re-run only affected checks, and only when time permits.
+- If `phase: ended`, use existing artifacts only and mark unverified claims explicitly.
 - Don't add up counts from different runs. If something wasn't verified (live API, production path, real entry path), say so plainly.
 
 Default Q1. 핵심 모듈 구현 및 검증 방법
@@ -22,7 +24,7 @@ Default Q2. Agent를 어떻게 썼고 어떤 부분을 바꿨는지
   - /goal (if used)
   - workers actually spawned and their handoffs
   - model/effort per phase
-- Changes table: 처음 접근 | 바꾼 것 | 계기(테스트 실패 / 독립 검증 / 사람 개입 / 시간) | 커밋. Give 3-5 real rows.
+- Changes table: 처음 접근 | 바꾼 것 | 계기(테스트 실패 / 독립 검증 / 사람 개입 / 시간) | 커밋. Include only actual changes; fewer than three rows is fine.
 - What we changed from default agent workflows, and why:
   - E2E-first done
   - anti-test-weakening

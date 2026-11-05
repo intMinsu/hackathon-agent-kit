@@ -32,7 +32,8 @@ Run .kit/01-bootstrap-prompt.md. GOAL_FILE=<과제.md> START=13:00 FREEZE=+2h30 
 | `core/AGENTS.template.md` | 운영 계약: 검증 규칙, 병렬 작업, UI 기준, 종료 처리 |
 | `templates/TASK_PROFILE.md` | 과제별 설정(sol이 채우고 사람이 확인) |
 | `.agents/skills/e2e-loop/SKILL.md` | planner → generator → healer 루프와 변경 종류별 검증 표 |
-| `scripts/e2e-summary.mjs` | 보고서 없음, 깨짐, 오래됨, 중단, 미실행, 실패, flaky를 구분하는 요약 |
+| `scripts/run-e2e.mjs` | 이전 보고서를 지우고 Playwright를 실행한 뒤 요약을 출력해요. 종료 코드는 Playwright 것을 그대로 유지해요 |
+| `scripts/e2e-summary.mjs` | 보고서의 결과를 분류해요(통과, 실패, flaky, 중단, 미실행, skip, runner 오류). 보고서가 현재 코드와 일치하는지는 따로 확인해야 해요 |
 | `02-goal-command.txt` | `/goal` 문장과, `/goal`이 없을 때 보낼 일반 지시 |
 | `03-submission-qa-prompt.md` | 원문의 제출 양식을 따르는 마무리 프롬프트(기본값은 Q1/Q2) |
 | `RUNBOOK.md` | 사람용 진행표 |

@@ -15,37 +15,49 @@
 ## Commands
 - Human/preview server: {{dev command}} on {{dev port}}. The real user entry is {{preview URL / proxy / iframe}}.
 - E2E runs its own server on {{e2e port}} with E2E=1. `npm run verify` is the definition of green.
-- One spec: `npx playwright test e2e/<file>.spec.ts[:line] --reporter=line`
-- Failure summary: `npm run e2e:summary`
+- One spec: `npm run e2e -- e2e/<file>.spec.ts[:line]`. Never pass `--reporter`: it disables the JSON report.
+- `scripts/run-e2e.mjs` deletes the old report, runs Playwright and prints the summary. Re-print it with `npm run e2e:summary`.
 - Independent checks (if the task computes/assigns/aggregates): {{check command}}
 - Clock: `date -Iseconds` (POSIX) or `Get-Date -Format o` (PowerShell).
 
 ## Required criteria → flows → evidence
 {{table: criterion | flow | e2e spec | independent check (if any) | milestone}}
 
-## Milestone loop (details: .agents/skills/e2e-loop/SKILL.md, or .kit/.agents/skills/e2e-loop/SKILL.md)
+## Milestone loop (details: {{e2e-loop path: .agents/skills/e2e-loop/SKILL.md or docs/agent/e2e-loop.md}})
 1. Spec first: write or extend `e2e/<flow>.spec.ts` (one `test.step` per user-visible step, plus a negative case). See it fail for the right reason.
 2. Implement. For computed results, also add or extend the independent check.
-3. Re-run only what the change affects (matrix in the skill). New specs get a `--repeat-each=3` flake check.
+3. Re-run only what the change affects (matrix in the skill). Once the spec is stable, run each new or changed spec once with `--repeat-each=3` at milestone end, not after every edit.
 4. At integration points, run `npm run verify`.
-5. Update Resume, add a JOURNAL entry, then commit `M<n>: <what> - verified by <evidence> (<counts>)`.
-
-No JOURNAL entry, no next milestone.
+5. Update Resume (replace it in place, never append), add a JOURNAL entry, then commit `M<n>: <what> - verified by <evidence> (<counts>)`.
 
 ## Verification rules
 - E2E proves user flows. It does not prove computed results are correct. For any calculation, assignment, optimisation or aggregation, an independent checker must:
-  - recompute constraints/invariants from the raw input
-  - not import the implementation's logic
-  - report violations with counts
-- The real access path counts. From the first feature on, check login → core task → reload → logout through {{preview URL}}, not only localhost.
-- Evidence is tied to a state. Record commit + dirty/clean, input version or hash, environment, command, counts and duration. Never reuse evidence from different code, input or build.
+  - read the raw input and the actual persisted/exported output of the run being reported; never import production calculation logic
+  - verify the required constraints, completeness/unique IDs, and the displayed/exported aggregates (including denominators); use a tiny hand-checked fixture plus the full task dataset
+  - print input/output hashes, checked counts, violations and a baseline comparison; exit nonzero on any acceptance violation
+- The real entry path counts.
+  - At first integration, and after any auth/proxy/runtime change, test the normal app (E2E off) inside the actual platform iframe/proxy with a fresh browser context.
+  - For each role: login → permitted task → reload → logout. Forbidden actions must be rejected server-side.
+  - Check base paths, redirects, cookie Domain/Path, `SameSite=None; Secure` when cross-site, X-Frame-Options and CSP `frame-ancestors`.
+  - If automation can't reach the real iframe, ask the human for a one-minute smoke right away. Until then, mark the path unverified. Opening the URL directly is diagnostic only.
+- Evidence belongs to a tested scope. Record:
+  - command/scope
+  - commit plus the relevant content identity (including untracked files)
+  - input/output identity
+  - environment, counts and duration
+
+  Reuse after unrelated changes only when those dependencies are unchanged (see the skill's matrix). A different HEAD alone neither invalidates nor validates evidence. The final state gets a fresh full verify and independent check.
 - Report each run separately (focused, repeat, full verify). Never merge counts from different runs.
 
 ## E2E rules
 - Selectors: getByRole / getByLabel / getByText; data-testid only as a fallback. Waits: web-first `expect` only; never `waitForTimeout` or `networkidle`.
 - Reset/seed through the E2E-only endpoint in `beforeEach`. Use `workers: 1` while state is shared.
+- E2E uses its own database/schema/namespace with the required engine. Refuse reset unless that isolation is confirmed. E2E stays off on the human preview.
 - External services: fake only the outbound transport when E2E=1. Fix "today" with `E2E_TODAY`.
-- Synthetic data only.
+- Data:
+  - Use the input files the spec provides, including the full sample, for realistic and full-input checks.
+  - Fixtures you create are synthetic.
+  - Never use real personal data.
 
 ## Test integrity
 - Never weaken a required criterion or suppress failures to get green: no skip, `.only`, `fixme`, deletion or loosened assertions for that purpose.
@@ -74,11 +86,13 @@ No JOURNAL entry, no next milestone.
 ## Time, scope and ending
 - At a milestone's budget expiry, replan against the remaining wall time. Cut optional work first. Never silently drop a required criterion; report it as unmet.
 - A blocker gets at most 10 minutes, then use a fallback or cut scope (and log it).
-- At freeze: no new features; run the freeze checklist.
-- If the human or the platform announces the end, it overrides the planned deadline:
+- Check the clock before each milestone and before/after long commands. Store absolute times with timezone. A command's timeout must fit the remaining time.
+- At FREEZE, or when the human says freeze: set `phase: frozen` first, then run the freeze checklist.
+- At DEADLINE, or when the human or platform announces the end (this overrides the plan):
   1. Set `phase: ended` with the time and source.
-  2. Stop safely, preserve data and artifacts, and don't kill shared services.
-  3. Mark submission `confirmed` only with real evidence.
+  2. Notify workers, stop owned work safely, preserve data and artifacts, and don't kill shared services.
+  3. Start no new builds or tests. Requested wrap-up uses existing evidence.
+  4. Mark submission `confirmed` only with real evidence.
 
 ## Working style
 - Secrets only via env vars. Never print or commit them.
@@ -86,9 +100,9 @@ No JOURNAL entry, no next milestone.
 - Commit on the current branch. Never force-push.
 
 ## Freeze checklist
-1. `npm run verify` and the independent checks are green; record the counts and evidence state.
-2. Production or required runtime (build/start, DB restart, container): check what the spec requires, through the real access path.
-3. Run each critical flow spec with `--repeat-each=3`.
+1. Run `npm run verify` (including the independent checks) once. Record the results, scope and evidence state.
+2. Production or required runtime (build/start, DB restart, container): check what the spec requires, through the real entry path.
+3. Reuse matching repeat evidence. Repeat only the critical flows whose code, input or runtime changed since.
 4. README: run, test, env vars, limitations.
-5. PLANS.md Outcomes: including cut scope.
+5. Final JOURNAL entry: outcomes, including cut scope.
 6. Submission docs in the exact format the spec asks for (default: Korean Q1/Q2 in docs/SUBMISSION_QA.md).

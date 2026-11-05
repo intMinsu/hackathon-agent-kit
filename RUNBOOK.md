@@ -37,8 +37,8 @@ Run .kit/01-bootstrap-prompt.md. GOAL_FILE=<과제.md> START=13:00 FREEZE=+2h30 
 ## 구현 시작
 
 `CONTINUE=no`였다면 이렇게 해요.
-1. `/new`(또는 codex 재시작)로 새 세션을 열어요. 그래야 `AGENTS.md`가 지침으로 자동 로드돼요.
-2. `/model`에서 medium으로 내려요.
+1. 같은 세션에서 계속해요. 새 세션을 열면 실행 중인 서브에이전트가 끊길 수 있어요. 지시가 흐려졌을 때만 재시작해요.
+2. 필요하면 `/model`에서 추론 강도를 조정해요.
 3. `.kit/02-goal-command.txt`의 `/goal` 줄을 붙여넣어요. `/goal`을 쓸 수 없으면 같은 파일의 일반 지시를 보내요.
 
 ## 진행 중 (30분마다, 2분 이내)
@@ -50,7 +50,7 @@ Run .kit/01-bootstrap-prompt.md. GOAL_FILE=<과제.md> START=13:00 FREEZE=+2h30 
 
 ## 동결 알람
 
-"freeze now"를 보내요. 멈추지 않으면 `/goal pause`.
+"freeze now: set phase frozen and run the freeze checklist"를 보내요. `/goal pause`는 검증까지 포함해 모든 작업을 멈출 때만 써요.
 
 ## 마감 15분 전
 

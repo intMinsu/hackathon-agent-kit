@@ -38,12 +38,15 @@ Make the smallest change that satisfies the spec, then re-run until green.
 | UI / copy / style | affected screens: values, sizes, keyboard, widths 1440/390, errors; rebuild if deployed | independent-check results (same input/output hash) |
 | docs only | links, commands and config match reality; no secrets in the diff | all product evidence, no E2E needed |
 
-- New or changed spec: run it with `--repeat-each=3`. Any failure means a flake; fix it now.
+- New or changed spec: once it is stable, run it once with `--repeat-each=3` at milestone end. An intermittent failure (sometimes passes) is a flake, so fix it now. A consistent failure is a bug, not a flake.
 - Run full `npm run verify` at integration points (end of a milestone, before freeze), not after every edit.
 - Record each run separately: command, counts, duration, commit plus dirty/clean, and input version.
 
 ## 5. Heal (when anything fails)
-1. Run `npm run e2e:summary`. It tells you whether the report is missing, stale, broken, interrupted, or contains real failures. Trust it only if the report is newer than your last change.
+1. Read the failing command's output.
+   - For E2E, `npm run e2e` already printed the summary of that run; re-print it with `npm run e2e:summary`.
+   - The summary classifies outcomes (failed / flaky / interrupted / not run / skipped / runner error). It does not prove the report matches the current code.
+   - Focused runs: `npm run e2e -- <spec>`. Never pass `--reporter`.
 2. Read the failing test's `error-context.md` (ARIA snapshot) and the server output.
 3. Read the trace only if still unclear (`npx playwright show-trace <zip>`).
 4. Classify the root cause: app bug | selector | timing | test data | harness | environment/entry path.
