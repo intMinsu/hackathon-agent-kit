@@ -26,6 +26,7 @@ Spec-required infrastructure counts as scaffold: DB, migrations/seed, minimal lo
 The cap beats "until green". At the cap, report actual state instead of continuing to chase green.
 
 1. **Profile (≤5 min).**
+   - First, copy the spec verbatim to `docs/TASK_SPEC.md` and treat that copy as read-only; requirements are read from it from now on. **Never edit the original spec file.** If the spec is `README.md`, leave its text untouched. Add run instructions only as an appended `## 실행 방법` section, and only if the deliverables require a README; otherwise put them in `docs/RUN.md`.
    - Read the spec and any starter code. Fill `docs/TASK_PROFILE.md` from the template, marking every value `spec | human | observed | assumed`.
    - Decide stack, persistence, auth/roles and containers **from the spec**. Kit defaults apply only where the spec is silent:
      - TypeScript + Next.js App Router, one Node process
@@ -39,7 +40,7 @@ The cap beats "until green". At the cap, report actual state instead of continui
    - The human confirms the profile asynchronously. Until then, its values are provisional. Silence is not approval of a business rule.
 3. **Preflight (≤5 min).**
    - Check OS/shell, Node/npm, git state, network, whether Playwright Chromium launches, reserved ports, and the real user entry (preview URL / proxy / iframe).
-   - Never overwrite an existing AGENTS.md/README; merge into it.
+   - Never overwrite an existing AGENTS.md; merge into it. The spec file follows the read-only rule in step 1.
    - Check required services too: Docker/Compose and DB connectivity when the spec needs them. Investigate each missing prerequisite once, within this budget.
    - Fallbacks (never mark a fallback as verified):
      - **No Docker:** use an existing native or managed DB of the required engine. Still deliver the required compose files, and mark container validation unverified. Never substitute JSON/SQLite for a mandated DB.
@@ -71,7 +72,7 @@ The cap beats "until green". At the cap, report actual state instead of continui
      - `verify` = typecheck → unit/independent checks if present → e2e. Don't run the summary twice. No new lint stack, no no-op scripts.
    - `e2e/smoke.spec.ts`: the home page renders its main heading, with no console or page errors.
    - If login is required: a smoke that logs in, reloads, and logs out.
-   - Run `npm run verify` until green. Also open the real entry path once (or report why you can't).
+   - Run `npm run verify` until green, within the cap. Main runs the M0 verify itself, because QA isn't spawned yet; from M1 on, QA alone runs full verify. Also open the real entry path once (or report why you can't).
 5. **Docs (compact).**
    - `docs/PLANS.md`:
      - **Resume**, at most 20 lines and the only current state. Replace it in place; never append history.
@@ -94,9 +95,14 @@ The cap beats "until green". At the cap, report actual state instead of continui
    - (e) the exact next instruction. If `/goal` is supported, use the `/goal` line from `.kit/02-goal-command.txt`. If not, give a plain "continue" instruction.
 
    - If `CONTINUE=yes` (default):
+     - Item (e) is informational only. Don't wait for me.
      - After the report, spawn `qa` and `web` with their owned files and the contracts.
-     - Read the generated AGENTS.md, then continue straight into M1.
+     - Read the generated AGENTS.md, then continue straight into M1 under the existing goal.
      - Treat my later messages as steering.
-   - If `CONTINUE=no`: STOP after the report, keeping `researcher` running. Read the generated AGENTS.md in this session; a restart is only needed if instructions get lost.
+   - If `CONTINUE=no`:
+     - After the report, Main stops and waits for my instruction.
+     - `researcher` may finish its brief.
+     - No other worker starts.
+     - This does not complete the goal.
 
 If Phase 0 is not green at the cap, report the actual results and the blocker. Do not mark M0 verified.

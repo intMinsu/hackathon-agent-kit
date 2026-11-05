@@ -3,7 +3,14 @@ name: e2e-loop
 description: Use for every feature, bug fix, or failing check in this project. The spec → red → implement → targeted verification → integrate loop. Playwright E2E proves user flows, independent checks prove computed results, and the healer procedure handles failures.
 ---
 
-# E2E loop (planner → generator → healer, one agent)
+# E2E loop (planner → generator → healer)
+
+With a team, the steps are split by owner:
+- QA plans and writes the specs and checkers, and runs the checks.
+- The product owners implement and fix.
+- Main integrates.
+
+Solo, one agent does all of it.
 
 E2E tests are the executable spec for user flows. Independent checks are the spec for computed results. A feature doesn't exist until its evidence passes **in the state you are reporting**.
 

@@ -2,7 +2,7 @@
 
 ## Product
 {{one-paragraph summary}}
-- Requirements: {{spec files}} (authoritative). Task settings: docs/TASK_PROFILE.md. Contracts: docs/CONTRACTS.md. Method: docs/SOLUTION_BRIEF.md.
+- Requirements: docs/TASK_SPEC.md (verbatim copy of {{spec file}}; read-only; never edit the original). Task settings: docs/TASK_PROFILE.md. Contracts: docs/CONTRACTS.md. Method: docs/SOLUTION_BRIEF.md.
 - Current state: the Resume section of docs/PLANS.md (the only place for current state). History: docs/JOURNAL.md (Korean).
 - Times: freeze {{FREEZE}}, deadline {{DEADLINE}} (authority: {{time authority}}).
 
@@ -73,13 +73,22 @@
 | Main (you) | requirements, docs/CONTRACTS.md, shared types, DB schema, deps, config, git, Resume/JOURNAL, integration | xhigh |
 | researcher | docs/SOLUTION_BRIEF.md, then the solver/domain module | max |
 | web | pages, components, route handlers; UI baseline (in web.toml) | high |
-| qa | e2e/**, checks/**, the E2E server/port, every full `npm run verify`, real-entry-path checks | high |
+| qa | e2e/**, checks/**, the E2E server/port, every full `npm run verify` from M1 on (Main ran M0), real-entry-path checks | high |
 
 - Spawn order:
   - researcher right after the profile
   - qa once criteria and contracts exist
   - web once contracts exist
-- If the role files aren't loaded, spawn with the instructions in `.codex/agents/<role>.toml` and request its effort explicitly.
+- If the named roles aren't available, spawn a generic agent with:
+  - model `gpt-6.1-sol` and the explicit effort (researcher=max, web=high, qa=high)
+  - the full `developer_instructions` from `.codex/agents/<role>.toml`
+  - the task context
+
+  Record the effective settings in Resume.
+- The milestone loop is split by owner:
+  - QA writes the specs and checkers, and runs the checks.
+  - The product owners (web, researcher, Main) implement the fixes.
+  - Main integrates.
 - Contract-first: before parallel coding, Main publishes docs/CONTRACTS.md (API shapes, entities, roles, UI labels / accessible names). Only Main changes it, and Main notifies the affected roles.
 - Only the files a worker owns are writable for that worker. The solver's author never writes the checker.
 - A worker returns an 8-line handoff:
@@ -109,6 +118,6 @@
 1. Run `npm run verify` (including the independent checks) once. Record the results, scope and evidence state.
 2. Production or required runtime (build/start, DB restart, container): check what the spec requires, through the real entry path.
 3. Reuse matching repeat evidence. Repeat only the critical flows whose code, input or runtime changed since.
-4. README: run, test, env vars, limitations.
+4. Run docs (`docs/RUN.md`, or an appended section of README if the deliverables require it; never edit the spec text): run, test, env vars, limitations.
 5. Final JOURNAL entry: outcomes, including cut scope.
 6. Submission docs in the exact format the spec asks for (default: Korean Q1/Q2 in docs/SUBMISSION_QA.md).
