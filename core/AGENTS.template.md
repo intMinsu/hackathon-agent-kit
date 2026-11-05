@@ -2,7 +2,7 @@
 
 ## Product
 {{one-paragraph summary}}
-- Requirements: {{spec files}} (authoritative). Task settings: docs/TASK_PROFILE.md.
+- Requirements: {{spec files}} (authoritative). Task settings: docs/TASK_PROFILE.md. Contracts: docs/CONTRACTS.md. Method: docs/SOLUTION_BRIEF.md.
 - Current state: the Resume section of docs/PLANS.md (the only place for current state). History: docs/JOURNAL.md (Korean).
 - Times: freeze {{FREEZE}}, deadline {{DEADLINE}} (authority: {{time authority}}).
 
@@ -27,7 +27,7 @@
 1. Spec first: write or extend `e2e/<flow>.spec.ts` (one `test.step` per user-visible step, plus a negative case). See it fail for the right reason.
 2. Implement. For computed results, also add or extend the independent check.
 3. Re-run only what the change affects (matrix in the skill). Once the spec is stable, run each new or changed spec once with `--repeat-each=3` at milestone end, not after every edit.
-4. At integration points, run `npm run verify`.
+4. At integration points, QA runs `npm run verify` (one runner at a time).
 5. Update Resume (replace it in place, never append), add a JOURNAL entry, then commit `M<n>: <what> - verified by <evidence> (<counts>)`.
 
 ## Verification rules
@@ -67,21 +67,27 @@
 - Business or policy questions (whose answer changes the design): send at most 3, once, early, as one message. Write down the assumption you are using, and keep doing work that doesn't depend on the answer.
 - Technical choices: decide yourself and log them in the Decision Log. Never present an assumption as an agreed business rule.
 
-## Parallel work (only if TASK_PROFILE allows; max {{max workers}})
-- Main owns requirements, shared types/contracts, dependencies, config, DB schema, git, Resume/JOURNAL, the E2E server, and full verify.
-- A worker starts only with: its owned files, the interface contract, its acceptance check and a time limit.
+## Team (roles: .codex/agents/*.toml; max {{max workers}} workers)
+| Role | Owns | Effort |
+|---|---|---|
+| Main (you) | requirements, docs/CONTRACTS.md, shared types, DB schema, deps, config, git, Resume/JOURNAL, integration | xhigh |
+| researcher | docs/SOLUTION_BRIEF.md, then the solver/domain module | max |
+| web | pages, components, route handlers; UI baseline (in web.toml) | high |
+| qa | e2e/**, checks/**, the E2E server/port, every full `npm run verify`, real-entry-path checks | high |
+
+- Spawn order:
+  - researcher right after the profile
+  - qa once criteria and contracts exist
+  - web once contracts exist
+- If the role files aren't loaded, spawn with the instructions in `.codex/agents/<role>.toml` and request its effort explicitly.
+- Contract-first: before parallel coding, Main publishes docs/CONTRACTS.md (API shapes, entities, roles, UI labels / accessible names). Only Main changes it, and Main notifies the affected roles.
+- Only the files a worker owns are writable for that worker. The solver's author never writes the checker.
 - A worker returns an 8-line handoff:
 
   ```
   ID/owner | goal & acceptance | files changed | interface | commands run → counts (failed/not run) | evidence state (commit/dirty, input) | ports/processes still held | risks & Main's next step
   ```
 - Main does not re-run a worker's passing check unless something it depends on changed.
-
-## UI baseline (check at first integration, not at the end)
-- Each role's main task works end-to-end at 1440px and 390px (or the task's target widths).
-- Body/table text 14–16px; secondary text 12–14px; no overflow; visible focus.
-- Every metric shows unit, period, denominator and which direction is better. "No data" is distinct from 0.
-- Plain words over jargon. Don't add features the spec excluded.
 
 ## Time, scope and ending
 - At a milestone's budget expiry, replan against the remaining wall time. Cut optional work first. Never silently drop a required criterion; report it as unmet.

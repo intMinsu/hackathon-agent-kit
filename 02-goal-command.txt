@@ -1,4 +1,11 @@
-/goal Implement docs/PLANS.md milestone by milestone per AGENTS.md and the e2e-loop skill (spec red → implement → affected checks → verify at integration → Resume/JOURNAL → commit). Done when every required criterion has passing evidence (E2E, plus an independent check for computed results) through the real entry path and the freeze checklist is complete. At FREEZE stop feature work and run the freeze checklist. If the end is announced, set phase: ended and stop. Report unmet criteria explicitly.
+# A) Recommended: one start line that sets a persistent goal (fill in GOAL_FILE and START)
+/goal Run .kit/01-bootstrap-prompt.md with GOAL_FILE=<task.md> START=<HH:MM> FREEZE=+2h30 DEADLINE=+3h, then build per AGENTS.md until the freeze checklist is done. After any compaction, re-read AGENTS.md and the PLANS.md Resume first. QA alone runs full verify. At FREEZE set phase frozen; on end, set phase ended and stop.
 
-# If /goal is unavailable, send this instead:
-Continue with docs/PLANS.md from the Resume "next action", following AGENTS.md. Keep going milestone by milestone without waiting for me until FREEZE, then run the freeze checklist.
+# B) If /goal is unavailable, send this as the first message instead
+Run .kit/01-bootstrap-prompt.md. GOAL_FILE=<task.md> START=<HH:MM> FREEZE=+2h30 DEADLINE=+3h CONTINUE=yes
+
+# C) Goal after a CONTINUE=no stop (or to re-arm a cleared goal)
+/goal Implement docs/PLANS.md per AGENTS.md with the team in .codex/agents (spec red → implement → affected checks → QA verify at integration → Resume/JOURNAL → commit). Done when every required criterion has passing evidence (E2E, plus an independent check for computed results) through the real entry path and the freeze checklist is complete. After any compaction, re-read AGENTS.md and the Resume. At FREEZE set phase frozen and run the checklist; on end, set phase ended and stop. Report unmet criteria explicitly.
+
+# D) No /goal and the agent stopped mid-way
+Continue from the PLANS.md Resume "next action", following AGENTS.md. Keep going milestone by milestone without waiting for me until FREEZE, then run the freeze checklist.

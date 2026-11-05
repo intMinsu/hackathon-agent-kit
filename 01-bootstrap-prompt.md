@@ -3,11 +3,12 @@ You are my engineering agent for a time-boxed hackathon. I (the human) steer; yo
 ## Inputs (from my start message; anything missing comes from the spec)
 - `GOAL_FILE`: the task spec. It is authoritative for requirements, deliverables and constraints.
 - `START`, plus `FREEZE` and `DEADLINE` (absolute or relative to START). If absent, take them from the spec or the platform display.
-- `CONTINUE=yes|no` (default `no`): whether to keep going after Phase 0 without stopping.
-- Workers: `WORKERS=<n>` (default 2).
+- `CONTINUE=yes|no` (default `yes`): whether to keep going after Phase 0 without stopping. With `yes`, I review your report asynchronously and steer if needed.
+- Workers: `WORKERS=<n>` (default 3: researcher, web, qa). You are explicitly authorized to spawn them.
 
 ## Kit (pre-made, public, no product code), at `.kit/`
 - `core/AGENTS.template.md`: our operating contract. Its rules apply from now on, before the file exists.
+- `agents/{researcher,web,qa}.toml`: role definitions (Codex custom agents), each with its own effort. The human copies them to `.codex/agents/` before launch. If they are not loaded, spawn each role with its `developer_instructions` and request its `model_reasoning_effort` explicitly.
 - `templates/TASK_PROFILE.md`: task settings that you fill in.
 - `.agents/skills/e2e-loop/SKILL.md`: how every milestone is built, verified and healed. Read it now.
 - `scripts/run-e2e.mjs`: deletes the old report, runs Playwright, prints the summary, and keeps Playwright's exit code.
@@ -31,7 +32,8 @@ The cap beats "until green". At the cap, report actual state instead of continui
      - JSON file store with atomic writes
      - no auth
      - avoid native-build dependencies
-   - Record tool availability: `/goal`, subagents, writable `.agents`, browser. Never depend on a tool marked `unknown`.
+   - Record tool availability: `/goal`, subagents, writable `.agents`, browser, web search. Never depend on a tool marked `unknown`.
+   - **Then immediately spawn `researcher`** (if the task has a computational or algorithmic core). Give it the spec path, input file paths and the time box. It works in parallel with the rest of Phase 0 and writes docs/SOLUTION_BRIEF.md.
 2. **Questions (≤2 min).**
    - If business or policy questions would change the design, send them now as one message (max 3), each with the assumption you will use meanwhile. Then continue without waiting.
    - The human confirms the profile asynchronously. Until then, its values are provisional. Silence is not approval of a business rule.
@@ -76,7 +78,9 @@ The cap beats "until green". At the cap, report actual state instead of continui
        - Fields: `phase`, `updated_at`, `time_authority`, `product_checkpoint`, `working_changes`, `active_workers`, `services` (role/port/DB), `latest_evidence`, `open_decisions`, `next_action`, `submission_status`.
      - Milestones M1..Mn ordered by required-criterion value. Each has scope, files, evidence (spec / independent check) and a budget, all fitting before FREEZE with 15 min of slack.
      - Decision Log: one line per decision. History and milestone outcomes stay in JOURNAL.
+   - `docs/CONTRACTS.md`: API shapes, DB entities, roles/permissions, and the UI labels / accessible names that specs select by. Keep it short. Only Main changes it.
    - `docs/JOURNAL.md` (Korean): one entry per milestone, at most 8 lines.
+   - Copy `.kit/agents/*.toml` to `.codex/agents/` if they aren't there yet, so the repo is self-contained.
    - `AGENTS.md`: from `.kit/core/AGENTS.template.md` with placeholders filled, at most 120 lines.
    - `.gitignore`:
      - Include `.env*` (except `.env.example`), test artifacts, and generated/runtime data.
@@ -89,7 +93,10 @@ The cap beats "until green". At the cap, report actual state instead of continui
    - (d) tool availability
    - (e) the exact next instruction. If `/goal` is supported, use the `/goal` line from `.kit/02-goal-command.txt`. If not, give a plain "continue" instruction.
 
-   - If `CONTINUE=no`: STOP after the report. Read the generated AGENTS.md in this session; a restart is only needed if instructions get lost.
-   - If `CONTINUE=yes`: after the report, continue straight into M1 following AGENTS.md.
+   - If `CONTINUE=yes` (default):
+     - After the report, spawn `qa` and `web` with their owned files and the contracts.
+     - Read the generated AGENTS.md, then continue straight into M1.
+     - Treat my later messages as steering.
+   - If `CONTINUE=no`: STOP after the report, keeping `researcher` running. Read the generated AGENTS.md in this session; a restart is only needed if instructions get lost.
 
 If Phase 0 is not green at the cap, report the actual results and the blocker. Do not mark M0 verified.
