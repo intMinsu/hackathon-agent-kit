@@ -47,7 +47,7 @@ Codex가 열리면 아래 두 줄을 입력해요. `/goal`을 쓸 수 없으면 
 | `scripts/run-e2e.mjs` | 이전 보고서를 지우고 Playwright를 실행한 뒤 요약을 출력해요. `--reporter` 옵션은 거부해요 |
 | `scripts/e2e-summary.mjs` | 보고서의 결과를 분류해요(통과, 실패, flaky, 중단, 미실행, skip, runner 오류). 보고서가 현재 코드와 일치하는지는 따로 확인해야 해요 |
 | `02-goal-command.txt` | 시작용 `/goal`, `/goal`이 없을 때의 대안, 재개 지시 |
-| `03-submission-qa-prompt.md` | 원문의 제출 양식을 따르는 마무리 프롬프트(기본값은 Q1/Q2) |
+| `03-submission-qa-prompt.md` | 마감 전에 `docs/ANSWER_PREP.md`를 만드는 프롬프트: 예상 질문, 답안 뼈대, 실제 사례, 핵심 수치. 서술형은 사람이 AI 없이 써요 |
 | `RUNBOOK.md` | 사람용 진행표 |
 
 ## 변경 이력
