@@ -69,6 +69,7 @@ Make the smallest change that satisfies the spec, then re-run until green.
   - evidence (each command → counts)
   - what the red run or the healer caught
   - human interventions
+  - any "에이전트 문제" (symptom → how it was noticed → root cause → fix → harness/prompt change)
   - next step
 - Update the Resume section (state only, not history).
 - Commit `M<n>: <what> - verified by <evidence> (<counts>)`.

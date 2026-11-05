@@ -8,7 +8,7 @@
 
 ## On every (re)entry: compaction, resume, new session
 1. Read this file and the PLANS.md Resume section, then check the clock and `git status`.
-2. If `phase: ended`, do not build or start new tests. Only answer questions or do explicitly requested wrap-up. If `phase: answering`, only the written answers; no product changes.
+2. If `phase: ended`, do nothing: no builds, no tests, no product changes, no help with the written answers.
 3. If `phase: frozen`, only fixes, verification and submission docs.
 4. Otherwise continue from "next action".
 
@@ -64,7 +64,10 @@
 - You may fix a demonstrably wrong selector, fixture or expectation. Log the evidence in the PLANS.md Decision Log. Suspect the app first.
 
 ## Questions and decisions
-- Business or policy questions (whose answer changes the design): send at most 3, once, early, as one message. Write down the assumption you are using, and keep doing work that doesn't depend on the answer.
+- Business or policy questions (whose answer changes the design) go to the IDE's **persona/stakeholder agent** (e.g. 인사팀), via the human.
+  - Write them as one copy-paste-ready Korean message addressed to that persona: at most 3 questions, early. One follow-up batch is allowed later if a new design-changing question appears.
+  - Write down the assumption you are using for each, and keep doing work that doesn't depend on the answer.
+  - Record each answer as source `stakeholder` in the Decision Log, along with what it changed.
 - Technical choices: decide yourself and log them in the Decision Log. Never present an assumption as an agreed business rule.
 
 ## Team (roles: .codex/agents/*.toml; max {{max workers}} workers)
@@ -103,12 +106,8 @@
 - A blocker gets at most 10 minutes, then use a fallback or cut scope (and log it).
 - Check the clock before each milestone and before/after long commands. Store absolute times with timezone. A command's timeout must fit the remaining time.
 - At FREEZE, or when the human says freeze: set `phase: frozen` first, then run the freeze checklist.
-- If written answers are due after the product (ANSWERS_DEADLINE), then at DEADLINE set `phase: answering`:
-  - Make no product code, config or data changes.
-  - Start no new builds or tests.
-  - Write only the organizers' questions, in their format, from existing evidence (`.kit/03-submission-qa-prompt.md`).
-  - At ANSWERS_DEADLINE, apply the end steps below.
-- At the final deadline, or when the human or platform announces the end (this overrides the plan):
+- The written answers are written by the human **without AI**. You only prepare `docs/ANSWER_PREP.md` (`.kit/03-submission-qa-prompt.md`), and it must be done before DEADLINE. You never draft or polish answers after DEADLINE.
+- At DEADLINE (product deadline), or when the human or platform announces the end (this overrides the plan):
   1. Set `phase: ended` with the time and source.
   2. Notify workers, stop owned work safely, preserve data and artifacts, and don't kill shared services.
   3. Start no new builds or tests. Requested wrap-up uses existing evidence.
@@ -117,6 +116,7 @@
 ## Working style
 - Secrets only via env vars. Never print or commit them.
 - Log human corrections in JOURNAL as "human intervention".
+- Log every agent failure in JOURNAL as "에이전트 문제" (one line each): symptom → how it was noticed (test / checker / human / persona) → root cause → fix → harness or prompt change. These episodes are the material for the written answers.
 - Commit on the current branch. Never force-push.
 
 ## Freeze checklist
@@ -125,4 +125,4 @@
 3. Reuse matching repeat evidence. Repeat only the critical flows whose code, input or runtime changed since.
 4. `docs/RUN.md`: run, test, env vars, limitations. Never edit the spec file (e.g. README.md). If README content seems required, tell the human.
 5. Final JOURNAL entry: outcomes, including cut scope.
-6. Submission docs in the exact format the spec asks for (default: Korean Q1/Q2 in docs/SUBMISSION_QA.md).
+6. `docs/ANSWER_PREP.md` via `.kit/03-submission-qa-prompt.md`: predicted questions and evidence notes for the human. Finish it at least 5 minutes before DEADLINE.

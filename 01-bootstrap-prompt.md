@@ -41,7 +41,7 @@ The cap beats "until green". At the cap, report actual state instead of continui
    - Record tool availability: `/goal`, subagents, writable `.agents`, browser, web search. Never depend on a tool marked `unknown`.
    - **Then immediately spawn `researcher`** (if the task has a computational or algorithmic core). Give it the spec path, input file paths and the time box. It works in parallel with the rest of Phase 0 and writes docs/SOLUTION_BRIEF.md.
 2. **Questions (≤2 min).**
-   - If business or policy questions would change the design, send them now as one message (max 3), each with the assumption you will use meanwhile. Then continue without waiting.
+   - If business or policy questions would change the design, write them now for the IDE's persona/stakeholder agent (e.g. 인사팀). Use one copy-paste-ready Korean message of at most 3 questions, each with the assumption you will use meanwhile. Show it to me to relay, then continue without waiting.
    - The human confirms the profile asynchronously. Until then, its values are provisional. Silence is not approval of a business rule.
 3. **Preflight (≤5 min).**
    - Check OS/shell, Node/npm, git state, network, whether Playwright Chromium launches, reserved ports, and the real user entry (preview URL / proxy / iframe).
